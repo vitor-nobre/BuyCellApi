@@ -1,53 +1,118 @@
 const firebase = require('../config/firebase')
 
 module.exports = {
+
     async index(req, res){
         const produtos = []
+
         await firebase.firestore()
-            .collection("Produtos")
+            .collection("products")
             .get()
             .then((snapshot) => {
                 snapshot.forEach((doc) => {
-                    const { name, description, preco, url } = doc.data()
-                    const  produto = {
+                    const { marca, 
+                            description, 
+                            preco, 
+                            image, 
+                            armazenamento, 
+                            ram, 
+                            cor, 
+                            so, 
+                            tela, 
+                            bateria 
+                        } = doc.data()
+
+                    const produto = {
                         id:doc.id,
-                        name,
-                        description,
-                        preco,
-                        url
+                        marca, 
+                        description, 
+                        preco, 
+                        image, 
+                        armazenamento, 
+                        ram, 
+                        cor, 
+                        so, 
+                        tela, 
+                        bateria
                     }
                     produtos.push(produto)
-                    //console.log(doc.id, doc.data())
-                });
+                })
             })
             .catch((err) => {
-                console.log('Error getting documents', err);
+                console.log('Error getting documents', err)
             })
-        console.log(produtos)    
-       return res.json(produtos);
+            
+       return res.json(produtos)
     },
 
-    async store(req, res) {
-      /*  const { username } = req.body;
- 
-        const userExists = await Dev.findOne({ user : username }); 
+    async create(req, res) {
+        const { modelo, 
+                marca, 
+                description, 
+                preco, 
+                image, 
+                armazenamento, 
+                ram, 
+                cor, 
+                so, 
+                tela, 
+                bateria 
+            } = req.body
+
+        await firebase.firestore()
+            .collection('products').doc(modelo).set({
+                marca,
+                description,
+                preco, 
+                image, 
+                armazenamento, 
+                ram, 
+                cor, 
+                so, 
+                tela, 
+                bateria
+            })
+    
+        return res.status(200).json({ message: "Success"});
         
-        if(userExists){
-            return res.json(userExists);
+    },
+
+    async delete(req, res) {
+        const { modelo } = req.headers
+
+        if(!modelo){
+            return res.status(404).json({ message:"Erro modelo não especificado" })
         }
 
-        const response = await axios.get(`https://api.github.com/users/${username}`);
- 
-        const { name, bio, avatar_url: avatar }= response.data;
+        await firebase.firestore()
+            .collection('products')
+            .doc(modelo)
+            .delete()
+       
+        return res.status(200).json({ result: "OK"})
+    },
 
-        const dev = await Dev.create({
-            name,
-            user: username,
-            bio,
-            avatar
-        })
+    async update(req, res) {
+        const { modelo } = req.headers
+        console.log(modelo)
+        const { marca, 
+                description, 
+                preco, 
+                image, 
+                armazenamento, 
+                ram, 
+                cor, 
+                so, 
+                tela, 
+                bateria 
+            } = req.body
 
-        return res.json(dev);
-        */
+        await firebase.firestore
+            .collection('products')
+            .doc(modelo).update(
+
+            )
+        
+        return res.json({ message: "ok"})
     }
 }
