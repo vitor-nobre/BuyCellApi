@@ -3,74 +3,46 @@ const firebase = require('../config/firebase')
 module.exports = {
 
     async index(req, res){
-        const produtos = []
+        const funcionarios = []
 
         await firebase.firestore()
-            .collection("products")
+            .collection("funcionarios")
             .get()
             .then((snapshot) => {
                 snapshot.forEach((doc) => {
-                    const { marca, 
-                            description, 
-                            preco, 
-                            image, 
-                            armazenamento, 
-                            ram, 
-                            cor, 
-                            so, 
-                            tela, 
-                            bateria 
+                    const { 
+                        name,
+                        number,
                         } = doc.data()
 
-                    const produto = {
-                        id:doc.id,
-                        marca, 
-                        description, 
-                        preco, 
-                        image, 
-                        armazenamento, 
-                        ram, 
-                        cor, 
-                        so, 
-                        tela, 
-                        bateria
+                    const funcionario = {
+                        email:doc.id,
+                        name,
+                        number,
                     }
-                    produtos.push(produto)
+                    funcionarios.push(funcionario)
                 })
             })
             .catch((err) => {
                 console.log('Error getting documents', err)
             })
             
-       return res.json(produtos)
+       return res.json(funcionarios)
     },
 
     async create(req, res) {
-        const { modelo, 
-                marca, 
-                description, 
-                preco, 
-                image, 
-                armazenamento, 
-                ram, 
-                cor, 
-                so, 
-                tela, 
-                bateria 
+        const { 
+            name,
+            email,
+            number,
+            password, 
             } = req.body
 
         await firebase.firestore()
-            .collection('products').doc(modelo).set({
-                marca,
-                description,
-                preco, 
-                image, 
-                armazenamento, 
-                ram, 
-                cor, 
-                so, 
-                tela, 
-                bateria
+            .collection('funcionarios').doc(email).set({
+                name,
+                number,
+                password,
             })
     
         return res.status(200).json({ message: "Success"});
@@ -78,15 +50,15 @@ module.exports = {
     },
 
     async delete(req, res) {
-        const { modelo } = req.headers
+        const { email } = req.headers
 
-        if(!modelo){
-            return res.status(404).json({ message:"Erro modelo não especificado" })
+        if(!email){
+            return res.status(404).json({ message:"Erro email não especificado" })
         }
 
         await firebase.firestore()
-            .collection('products')
-            .doc(modelo)
+            .collection('funcionarios')
+            .doc(email)
             .delete()
        
         return res.status(200).json({ result: "OK"})
@@ -95,20 +67,15 @@ module.exports = {
     async update(req, res) {
         const { modelo } = req.headers
         console.log(modelo)
-        const { marca, 
-                description, 
-                preco, 
-                image, 
-                armazenamento, 
-                ram, 
-                cor, 
-                so, 
-                tela, 
-                bateria 
+        const { 
+            name,
+            email,
+            number,
+            password, 
             } = req.body
 
         await firebase.firestore
-            .collection('products')
+            .collection('funcionarios')
             .doc(modelo).update(
 
             )

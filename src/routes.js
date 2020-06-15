@@ -7,7 +7,6 @@ const FuncionarioController = require('./controllers/FuncionarioController')
 const routes = express.Router()
 
 routes.get('/produto', ProdutoController.index)
-
 routes.post('/produto',
     celebrate({
         body: Joi.object().keys({
@@ -29,11 +28,9 @@ routes.post('/produto',
     ProdutoController.create
 )
 routes.delete('/produto', ProdutoController.delete)
-
 routes.put('/produto', ProdutoController.update)
 
 routes.get('/usuario', UsuarioController.index)
-
 routes.post('/usuario',
     celebrate({
         body: Joi.object().keys({
@@ -49,8 +46,24 @@ routes.post('/usuario',
     UsuarioController.create
 )
 routes.delete('/usuario', UsuarioController.delete)
-
 routes.put('/usuario', UsuarioController.update)
+
+routes.get('/funcionario', FuncionarioController.index)
+routes.post('/funcionario',
+    celebrate({
+        body: Joi.object().keys({
+            name: Joi.string().required(),
+            email: Joi.string().required().email(),
+            password: Joi.string().required(),
+            number: Joi.number().required()
+        })
+    },{
+        abortEarly: false,
+    }), 
+    FuncionarioController.create
+)
+routes.delete('/funcionario', FuncionarioController.delete)
+routes.put('/funcionario', FuncionarioController.update)
 
 
 module.exports = routes;
