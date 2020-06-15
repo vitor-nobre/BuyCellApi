@@ -1,10 +1,12 @@
 const express = require('express')
 const { celebrate, Joi } = require('celebrate')
 const ProdutoController = require('./controllers/ProdutoController')
+const UsuarioController = require('./controllers/UsuarioController')
+const FuncionarioController = require('./controllers/FuncionarioController')
 
-const routes = express.Router();
+const routes = express.Router()
 
-routes.get('/produtos', ProdutoController.index)
+routes.get('/produto', ProdutoController.index)
 
 routes.post('/produto',
     celebrate({
@@ -29,6 +31,25 @@ routes.post('/produto',
 routes.delete('/produto', ProdutoController.delete)
 
 routes.put('/produto', ProdutoController.update)
+
+routes.get('/usuario', UsuarioController.index)
+
+routes.post('/produto',
+    celebrate({
+        body: Joi.object().keys({
+            name: Joi.string().required(),
+            email: Joi.string().required().email(),
+            password: Joi.string().required(),
+            number: Joi.number().required(),
+        })
+    },{
+        abortEarly: false,
+    }), 
+    UsuarioController.create
+)
+routes.delete('/usuario', UsuarioController.delete)
+
+routes.put('/usuario', UsuarioController.update)
 
 
 module.exports = routes;
