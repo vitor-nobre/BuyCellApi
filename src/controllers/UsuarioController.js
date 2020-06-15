@@ -11,12 +11,14 @@ module.exports = {
             .then((snapshot) => {
                 snapshot.forEach((doc) => {
                     const { 
+                        email,
                         name,
                         number,
                         } = doc.data()
 
                     const produto = {
-                        email:doc.id,
+                        cpf:doc.id,
+                        email,
                         name,
                         number,
                     }
@@ -32,6 +34,7 @@ module.exports = {
 
     async create(req, res) {
         const { 
+            cpf,
             name,
             email,
             number,
@@ -39,7 +42,8 @@ module.exports = {
             } = req.body
 
         await firebase.firestore()
-            .collection('users').doc(email).set({
+            .collection('users').doc(cpf.toString()).set({
+                email,
                 name,
                 number,
                 password,
@@ -50,15 +54,15 @@ module.exports = {
     },
 
     async delete(req, res) {
-        const { email } = req.headers
+        const { cpf } = req.headers
 
-        if(!email){
+        if(!cpf){
             return res.status(404).json({ message:"Erro email não especificado" })
         }
 
         await firebase.firestore()
             .collection('users')
-            .doc(email)
+            .doc(cpf.toString())
             .delete()
        
         return res.status(200).json({ result: "OK"})

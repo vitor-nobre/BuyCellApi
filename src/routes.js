@@ -34,13 +34,14 @@ routes.put('/produto', ProdutoController.update)
 
 routes.get('/usuario', UsuarioController.index)
 
-routes.post('/produto',
+routes.post('/usuario',
     celebrate({
         body: Joi.object().keys({
             name: Joi.string().required(),
             email: Joi.string().required().email(),
             password: Joi.string().required(),
             number: Joi.number().required(),
+            cpf: Joi.number().required(),
         })
     },{
         abortEarly: false,
