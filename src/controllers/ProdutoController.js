@@ -23,7 +23,7 @@ module.exports = {
                         } = doc.data()
 
                     const produto = {
-                        id:doc.id,
+                        modelo:doc.id,
                         marca, 
                         description, 
                         preco, 
@@ -43,6 +43,53 @@ module.exports = {
             })
             
        return res.json(produtos)
+    },
+
+    async show(req, res){
+        const { modelo } = req.params
+
+        let produto = {}
+
+        await firebase.firestore()
+            .collection("products")
+            .doc(modelo)
+            .get()
+            .then(snapshot => {
+                if(snapshot) {
+                    
+                    const { marca, 
+                            description, 
+                            preco, 
+                            image, 
+                            armazenamento, 
+                            ram, 
+                            cor, 
+                            so, 
+                            tela, 
+                            bateria 
+                        } = snapshot.data()
+
+                    produto = {
+                        modelo:snapshot.id,
+                        marca, 
+                        description, 
+                        preco, 
+                        image, 
+                        armazenamento, 
+                        ram, 
+                        cor, 
+                        so, 
+                        tela, 
+                        bateria
+                    }
+                    
+                }
+            })
+            .catch((err) => {
+                console.log('Error getting documents', err)
+            })
+            
+       return res.json(produto)
     },
 
     async create(req, res) {
@@ -73,7 +120,7 @@ module.exports = {
                 bateria
             })
     
-        return res.status(200).json({ message: "Success"});
+        return res.status(200).json({ message: "Success"})
         
     },
 
@@ -93,10 +140,24 @@ module.exports = {
     },
 
     async update(req, res) {
-        const { modelo } = req.headers
-        console.log(modelo)
-        const { marca, 
-                description, 
+
+        const { modelo, 
+            marca, 
+            description, 
+            preco, 
+            image, 
+            armazenamento, 
+            ram, 
+            cor, 
+            so, 
+            tela, 
+            bateria 
+        } = req.body
+
+        await firebase.firestore()
+            .collection('products').doc(modelo).set({
+                marca,
+                description,
                 preco, 
                 image, 
                 armazenamento, 
@@ -104,15 +165,9 @@ module.exports = {
                 cor, 
                 so, 
                 tela, 
-                bateria 
-            } = req.body
+                bateria
+            })
 
-        await firebase.firestore
-            .collection('products')
-            .doc(modelo).update(
-
-            )
-        
-        return res.json({ message: "ok"})
+        return res.status(200).json({ message: "Success"})
     }
 }

@@ -32,7 +32,42 @@ module.exports = {
        return res.json(usuarios)
     },
 
+    async show(req, res){
+
+        const { cpf } = req.params
+
+        let usuario = {}
+
+        await firebase.firestore()
+            .collection("users")
+            .doc(cpf)
+            .get()
+            .then(doc => {
+                if(doc) {
+                    const { 
+                        email,
+                        name,
+                        number,
+                        password
+                        } = doc.data()
+
+                    usuario = {
+                        cpf:doc.id,
+                        email,
+                        name,
+                        number,
+                        password
+                    }
+                }
+            })
+            .catch((err) => {
+                console.log('Error getting documents', err)
+            })
+       return res.json(usuario)
+    },
+
     async create(req, res) {
+        
         const { 
             cpf,
             name,
@@ -49,7 +84,7 @@ module.exports = {
                 password,
             })
     
-        return res.status(200).json({ message: "Success"});
+        return res.status(200).json({ message: "Success"})
         
     },
 
@@ -69,21 +104,23 @@ module.exports = {
     },
 
     async update(req, res) {
-        const { modelo } = req.headers
-        console.log(modelo)
+
         const { 
+            cpf,
             name,
             email,
             number,
             password, 
             } = req.body
 
-        await firebase.firestore
-            .collection('users')
-            .doc(modelo).update(
-
-            )
-        
-        return res.json({ message: "ok"})
+        await firebase.firestore()
+            .collection('users').doc(cpf.toString()).set({
+                email,
+                name,
+                number,
+                password,
+            })
+    
+        return res.status(200).json({ message: "Success"})
     }
 }

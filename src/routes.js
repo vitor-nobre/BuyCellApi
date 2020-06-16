@@ -7,6 +7,7 @@ const FuncionarioController = require('./controllers/FuncionarioController')
 const routes = express.Router()
 
 routes.get('/produto', ProdutoController.index)
+routes.get('/produto/:modelo', ProdutoController.show)
 routes.post('/produto',
     celebrate({
         body: Joi.object().keys({
@@ -31,6 +32,7 @@ routes.delete('/produto', ProdutoController.delete)
 routes.put('/produto', ProdutoController.update)
 
 routes.get('/usuario', UsuarioController.index)
+routes.get('/usuario/:cpf', UsuarioController.show)
 routes.post('/usuario',
     celebrate({
         body: Joi.object().keys({
@@ -49,6 +51,7 @@ routes.delete('/usuario', UsuarioController.delete)
 routes.put('/usuario', UsuarioController.update)
 
 routes.get('/funcionario', FuncionarioController.index)
+routes.get('/funcionario/:email', FuncionarioController.show)
 routes.post('/funcionario',
     celebrate({
         body: Joi.object().keys({

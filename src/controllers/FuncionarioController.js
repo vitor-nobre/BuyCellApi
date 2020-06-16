@@ -30,6 +30,35 @@ module.exports = {
        return res.json(funcionarios)
     },
 
+    async show(req, res){
+        
+        const { email } = req.params
+
+        let funcionario = {}
+
+        await firebase.firestore()
+            .collection("funcionarios")
+            .doc(email)
+            .get()
+            .then(doc => {
+                if(doc) {
+                    const { name, number, password } = doc.data()
+
+                    funcionario = {
+                        email:doc.id,
+                        name,
+                        number,
+                        password
+                    }
+                }
+            })
+            .catch((err) => {
+                console.log('Error getting documents', err)
+            })
+            
+       return res.json(funcionario)
+    },
+
     async create(req, res) {
         const { 
             name,
@@ -45,7 +74,7 @@ module.exports = {
                 password,
             })
     
-        return res.status(200).json({ message: "Success"});
+        return res.status(200).json({ message: "Success"})
         
     },
 
@@ -65,8 +94,6 @@ module.exports = {
     },
 
     async update(req, res) {
-        const { modelo } = req.headers
-        console.log(modelo)
         const { 
             name,
             email,
@@ -74,12 +101,13 @@ module.exports = {
             password, 
             } = req.body
 
-        await firebase.firestore
-            .collection('funcionarios')
-            .doc(modelo).update(
-
-            )
-        
-        return res.json({ message: "ok"})
+        await firebase.firestore()
+            .collection('funcionarios').doc(email).set({
+                name,
+                number,
+                password,
+            })
+    
+        return res.status(200).json({ message: "Success"})
     }
 }
