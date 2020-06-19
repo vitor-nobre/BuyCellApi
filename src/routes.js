@@ -3,6 +3,7 @@ const { celebrate, Joi } = require('celebrate')
 const ProdutoController = require('./controllers/ProdutoController')
 const UsuarioController = require('./controllers/UsuarioController')
 const FuncionarioController = require('./controllers/FuncionarioController')
+const AuthController = require('./controllers/AuthController')
 
 const routes = express.Router()
 
@@ -47,6 +48,33 @@ routes.post('/usuario',
     }), 
     UsuarioController.create
 )
+routes.post('/auth',
+        celebrate
+        ({
+            body: Joi.object().keys({
+                email: Joi.string().required().email(),
+                password: Joi.string().required(),
+            })
+        },{
+            abortEarly: false,
+
+        }),
+        UsuarioController.createAuth
+        );
+
+routes.get('/auth',
+        celebrate
+        ({
+            body: Joi.object().keys({
+                email: Joi.string().required().email(),
+                password: Joi.string().required(),
+            })
+        },{
+            abortEarly: false,
+
+        }),
+        AuthController.index);
+
 routes.delete('/usuario', UsuarioController.delete)
 routes.put('/usuario', UsuarioController.update)
 

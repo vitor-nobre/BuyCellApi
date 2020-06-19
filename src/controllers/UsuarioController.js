@@ -83,9 +83,24 @@ module.exports = {
                 number,
                 password,
             })
-    
         return res.status(200).json({ message: "Success"})
         
+    },
+
+     createAuth(req, res) {
+            const {email, password} = req.body;
+
+         firebase.auth().createUserWithEmailAndPassword(email, password)
+        .then((u) =>{
+            console.log(u)
+            return res.status(200).json({ message: "Success"})
+
+        }).catch((err)=>{
+            console.log(err)
+            return res.status(500).json({ message: "ERRO"})
+
+        })
+
     },
 
     async delete(req, res) {
